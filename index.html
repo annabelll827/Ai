@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>زیرەکی دەستکرد - AI Chat</title>
+    <!-- Tailwind CSS بۆ دیزاینی مۆدێرن -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome بۆ ئایکۆنەکان -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -13,6 +15,7 @@
 </head>
 <body class="bg-gray-950 text-gray-100 h-screen flex flex-col justify-between">
 
+    <!-- سەرپەڕی وێبسایت -->
     <header class="bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between shadow-md">
         <div class="flex items-center space-x-3 space-x-reverse">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
@@ -30,6 +33,7 @@
         </div>
     </header>
 
+    <!-- ناوچەی گفتوگۆ -->
     <main id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 max-w-4xl w-full mx-auto">
         <div class="flex items-start space-x-3 space-x-reverse">
             <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md">
@@ -41,6 +45,7 @@
         </div>
     </main>
 
+    <!-- بەشی نوسینی پەیام -->
     <footer class="bg-gray-950 border-t border-gray-800 p-4">
         <form id="chat-form" class="max-w-4xl mx-auto flex items-center gap-3">
             <div class="relative flex-1">
@@ -53,6 +58,7 @@
         </form>
     </footer>
 
+    <!-- سکریپتی کارپێکردن و پەیوەندی بە ئای ئای -->
     <script>
         const API_KEY = 'AQ.Ab8RN6Jq46jXOox4K1SGjig1aXSTWBFQYRsXe3CwS2JKz8jUoQ'; 
 
@@ -86,16 +92,18 @@
                 const data = await response.json();
                 removeLoading(loadingId);
 
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
                     const aiReply = data.candidates[0].content.parts[0].text;
                     appendMessage(aiReply, 'ai');
+                } else if (data.error) {
+                    appendMessage("هەڵەی API: " + data.error.message, 'ai');
                 } else {
-                    appendMessage("ببوورە، هەڵەیەک ڕوودا لە وەرگرتنی وەڵام.", 'ai');
+                    appendMessage("ببوورە، وەڵامێک نەدۆزرایەوە.", 'ai');
                 }
 
             } catch (error) {
                 removeLoading(loadingId);
-                appendMessage("تکایە پشکنین بۆ هێڵی ئینتەرنێت بکە.", 'ai');
+                appendMessage("هەڵە لە پەیوەندیکردن بە ئینتەرنێت.", 'ai');
             }
         });
 
