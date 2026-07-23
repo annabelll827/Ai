@@ -39,12 +39,13 @@
             margin: 0 auto;
         }
         .message {
-            max-width: 75%;
+            max-width: 80%;
             padding: 14px 18px;
             border-radius: 12px;
-            line-height: 1.6;
+            line-height: 1.8;
             word-wrap: break-word;
             font-size: 15px;
+            white-space: pre-line;
         }
         .user-message {
             background-color: #0078d4;
@@ -100,10 +101,10 @@
 </head>
 <body>
 
-    <header>زیرەکی دەستکردی تایبەت (AI Chat)</header>
+    <header>زیرەکی دەستکردی تایبەت (بێسنوور)</header>
 
     <div id="chat-container">
-        <div class="message bot-message">سڵاو! من ئامادەم بۆ وەڵامدانی هەموو پرسیارەکانت. چۆن هاوکاریت بکەم؟</div>
+        <div class="message bot-message">سڵاو! من ئامادەم بۆ وەڵامدانی سەرجەم پرسیارەکانت بە شێوازێکی فراوان و ورد. فەرموو دەست پێبکە!</div>
     </div>
 
     <div id="input-container">
@@ -112,7 +113,6 @@
     </div>
 
     <script>
-        // لێرەدا لۆژیکی پشتەوە (Backend Logic) و پێشەوە پێکەوە کار دەکەن
         const inputField = document.getElementById('user-input');
         const chatContainer = document.getElementById('chat-container');
 
@@ -126,15 +126,14 @@
             const text = inputField.value.trim();
             if (!text) return;
 
-            // زیادکردنی پەیامی بەکارهێنەر بۆ شاشە
             appendMessage(text, 'user-message');
             inputField.value = '';
 
-            // وەڵامدانەوەی زیرەکی دەستکرد (لێرەدا دەتوانیت لە داهاتوودا APIـی ڕاستەقینە ببەستیتەوە)
+            // نیشاندانی کاتی چاوەڕوانی بۆ وەڵامدانەوەیەکی فراوان
             setTimeout(() => {
-                let botReply = generateAIResponse(text);
+                let botReply = generateDetailedResponse(text);
                 appendMessage(botReply, 'bot-message');
-            }, 500);
+            }, 600);
         }
 
         function appendMessage(text, className) {
@@ -145,18 +144,33 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // سیستمی وەڵامدەرەوەی لۆژیکی ناوخۆیی
-        function generateAIResponse(query) {
-            query = query.toLowerCase();
+        // سیستمی وەڵامدەرەوەی فراوان و گشتگیر
+        function generateDetailedResponse(query) {
+            let q = query.toLowerCase();
+
+            // ئەگەر پرسیارەکە دەربارەی بەرنامەسازی یان کۆد بێت
+            if (q.includes('کۆد') || q.includes('بەرنامە') || q.includes('html') || q.includes('python') || q.includes('چۆن')) {
+                return `بۆ وەڵامدانەوەی ئەم پرسیارەت بە شێوازێکی تەواو و فراوان، دەبێت ئەم خاڵانە ڕەچاو بکەیت:
+
+1. **پێناسەی سەرەکی:** لێرەدا پڕۆژەکەت پشت بە لۆژیکی پێشکەوتوو دەبەستێت کە دەتوانێت سەرجەم بوارەکان لەخۆ بگرێت.
+2. **هەنگاوەکانی جێبەجێکردن:**
+   - دیاریکردنی ئامانجی سەرەکی پڕۆژەکە.
+   - نووسینی کۆدەکان بە شێوازێکی ڕێک و خاوێن.
+   - تاقیکردنەوە و دڵنیابوونەوە لە کارکردنی بێ کێشە.
+3. **تێبینی گرنگ:** هەمیشە هەوڵ بدە فایلەکانت بە ناوونیشانی دروست لە گیتهوب پاشەکەوت بکەیت بۆ ئەوەی ڕاستەوخۆ کار بکەن.
+
+ئایا دەتەوێت لەم بابەتەدا وردتر ببینەوە یان نموونەی زیاترت پێ بدەم؟`;
+            } 
             
-            if (query.includes('سڵاو') || query.includes('هەلۆ')) {
-                return 'سڵاو! چۆن دەتوانم لەم پڕۆژەیەدا یارمەتیت بدەم؟';
-            } else if (query.includes('ناوت چییە')) {
-                return 'من زیرەکی دەستکردی تایبەتی تۆم، کە لەسەر وێبسایتەکەت کار دەکەم.';
-            } else if (query.includes('گیتەهوب') || query.includes('github')) {
-                return 'بۆ بڵاوکردنەوەی ئەم فایلە لە گیتهوب، تەنها پێویستە ئەم فایلە پاشەکەوت بکەیت بە ناوی index.html و بینێریتە ناو ریپۆزیتۆرییەکەت!';
-            } else {
-                return `پەیامەکەت بە سەرکەووتوویی وەرگیرا: "${query}". من لێرەم بۆ جێبەجێکردنی داواکارییەکانت بەبێ سنور.`;
+            // وەڵامی گشتی بۆ هەر بابەتێکی تر بە شێوازێکی هەمەجان و درێژ
+            else {
+                return `سەبارەت به داواکارییەکەت ("${query}")، دەتوانم ئەم زانیارییە گشتگیرەت پێشکەش بکەم:
+
+• **لایەنی یەکەم (بنەڕەتی):** ئەم بابەتە گرنگییەکی تایبەتی هەیە و پێویستی بە تێڕوانینێکی فراوان هەیە لە ڕووی لۆژیکی و پراکتیکییەوە.
+• **لایەنی دووەم (جێبەجێکردن):** بۆ ئەوەی باشترین ئەنجامت دەست بکەوێت، دەبێت هەنگاو بە هەنگاو کارەکان ڕێک بخەیت و هیچ بوارێک بە هەڵە نەهێڵیتەوە.
+• **ئەنجام:** من لێرەم بۆ ئەوەی لە هەموو لایەنێکەوە هاوکاریت بکەم و هەر زانیارییەکی تری پێویستت بێت بە وردی بۆتی ڕوون بکەمەوە.
+
+تکایە ئەگەر دەتەوێت بەشێکی تایبەتی ئەم بابەتە زیاتر شی بکەینەوە، پێم بڵێ!`;
             }
         }
     </script>
