@@ -1,176 +1,137 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>یاریدەدەری زیرەکی دەستکرد</title>
+    <title>زیرەکی دەستکرد - AI Chat</title>
+    <!-- Tailwind CSS بۆ دیزاینی مۆدێرن -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome بۆ ئایکۆنەکان -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        #chat-container {
-            width: 100%;
-            max-width: 650px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            height: 85vh;
-            overflow: hidden;
-        }
-        .chat-header {
-            background: #007bff;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        #chat-box {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: #f8f9fa;
-        }
-        .message {
-            max-width: 80%;
-            padding: 14px 18px;
-            border-radius: 14px;
-            line-height: 1.6;
-            font-size: 15px;
-            word-wrap: break-word;
-        }
-        .user-msg {
-            background-color: #007bff;
-            color: white;
-            align-self: flex-start;
-            border-bottom-right-radius: 4px;
-        }
-        .ai-msg {
-            background-color: #e4e6eb;
-            color: #1c1e21;
-            align-self: flex-end;
-            border-bottom-left-radius: 4px;
-        }
-        #input-area {
-            display: flex;
-            padding: 15px;
-            border-top: 1px solid #e1e4e8;
-            background: #ffffff;
-        }
-        #user-input {
-            flex: 1;
-            padding: 14px;
-            border: 1px solid #ccd0d5;
-            border-radius: 10px;
-            outline: none;
-            font-size: 15px;
-        }
-        #user-input:focus { border-color: #007bff; }
-        #send-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 0 25px;
-            margin-right: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-        }
-        #send-btn:hover { background-color: #0056b3; }
+        body { font-family: 'Vazirmatn', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-gray-950 text-gray-100 h-screen flex flex-col justify-between">
 
-    <div id="chat-container">
-        <div class="chat-header">یاریدەدەری زیرەکی دەستکرد</div>
-        <div id="chat-box">
-            <div class="message ai-msg">سڵاو! من زیرەکی دەستکردم. چۆن دەتوانم یارمەتیت بدەم؟</div>
+    <!-- سەرپەڕی وێبسایت (Header) -->
+    <header class="bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-brain text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-white">ئای ئای مۆدێرن</h1>
+                <p class="text-xs text-emerald-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ئامادەیە بۆ وەڵامدانەوە
+                </p>
+            </div>
         </div>
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="پرسیارەکەت لێرە بنووسە..." autofocus>
-            <button id="send-btn" onclick="sendMessage()">ناردن</button>
+        <div class="text-gray-400 text-sm bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700">
+            <i class="fa-solid fa-bolt text-amber-400 ml-1"></i> خێرا و گشتگیر
         </div>
-    </div>
+    </header>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/genai": "https://esm.run/@google/genai"
-        }
-      }
-    </script>
+    <!-- ناوچەی گفتوگۆ (Chat Box) -->
+    <main id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 max-w-4xl w-xl mx-auto">
+        <!-- نامەی سەرەتایی ئای ئای -->
+        <div class="flex items-start space-x-3 space-x-reverse">
+            <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-4 rounded-2xl rounded-tr-none max-w-[85%] md:max-w-xl text-sm leading-relaxed shadow-sm">
+                سڵاو! من زیرەکی دەستکردم. دەتوانیت هەر پرسیارێک یان ئەرکێکت هەبێت لێم بکەیت، بە خۆشحاڵییەوە یارمەتیت دەدەم.
+            </div>
+        </div>
+    </main>
 
-    <script type="module">
-        import { GoogleGenAI } from "@google/genai";
+    <!-- بەشی نوسینی پەیام (Footer / Input Area) -->
+    <footer class="bg-gray-950 border-t border-gray-800 p-4">
+        <form id="chat-form" class="max-w-4xl mx-auto flex items-center gap-3">
+            <div class="relative flex-1">
+                <input type="text" id="user-input" placeholder="لێرە پرسیارەکەت بنووسە..." 
+                    class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3.5 pr-4 pl-12 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner">
+                <button type="button" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-indigo-400 transition-colors">
+                    <i class="fa-solid fa-paperclip"></i>
+                </button>
+            </div>
+            <button type="submit" id="send-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-lg shrink-0 cursor-pointer">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+        </form>
+    </footer>
 
-        // کلیلەکەی خۆت کە لە وێنەکەدا دیارە لێرە دابنە
-        const ai = new GoogleGenAI({ apiKey: "لێرە_کلیلەکەی_خۆت_دابنێ" });
-
-        const chatBox = document.getElementById('chat-box');
+    <!-- سکریپتی کارپێکردن -->
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
 
-        let chat;
-        try {
-            chat = ai.chats.create({
-                model: 'gemini-1.5-flash',
-                config: {
-                    systemInstruction: "تۆ زیرەکی دەستکردی منی، بە زمانی کوردی شیرین و ڕاستەوخۆ وەڵامی پرسیارەکان بدەرەوە.",
-                }
-            });
-        } catch (e) {
-            console.error(e);
-        }
-
-        window.sendMessage = async function() {
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             const text = userInput.value.trim();
             if (!text) return;
 
-            appendMessage(text, 'user-msg');
+            // زیادکردنی پرسیاری بەکارهێنەر بۆ شاشە
+            appendMessage(text, 'user');
             userInput.value = '';
-            sendBtn.disabled = true;
 
-            const loadingMsg = appendMessage('بیردەکاتەوە...', 'ai-msg');
+            // نیشدانی دۆخی نوسین یان چاوەڕوانی
+            const loadingId = showLoading();
 
-            try {
-                let response = await chat.sendMessage({ message: text });
-                loadingMsg.remove();
-                appendMessage(response.text, 'ai-msg');
-            } catch (error) {
-                console.error(error);
-                loadingMsg.remove();
-                appendMessage("ببورە، کێشەیەک ڕوویدا لە پەیوەندی کردن بە زیرەکی دەستکردەوە.", 'ai-msg');
-            } finally {
-                sendBtn.disabled = false;
-                userInput.focus();
-            }
-        }
-
-        function appendMessage(text, className) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${className}`;
-            msgDiv.textContent = text;
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return msgDiv;
-        }
-
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            // لێرەدا دەتوانیت کۆدی پەیوەندیدان بە API (وەک OpenAI یان Claude) دابنێیت
+            setTimeout(() => {
+                removeLoading(loadingId);
+                appendMessage("سوپاس بۆ پرسیارەکەت! من لە ئێستادا وەک ڕوکارێک ئامادەم، بۆ بەستنەوەی بە مێشکێکی ڕاستەقینەی ئای ئای (API)، دەتوانیت کلیلەکە لەم بەشەی کۆدەدا جێگیر بکەیت.", 'ai');
+            }, 1000);
         });
+
+        function appendMessage(text, sender) {
+            const isUser = sender === 'user';
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 space-x-reverse ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+            
+            messageDiv.innerHTML = `
+                <div class="w-9 h-9 rounded-xl ${isUser ? 'bg-purple-600' : 'bg-indigo-600'} flex items-center justify-center text-white shrink-0 shadow-md">
+                    <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+                </div>
+                <div class="${isUser ? 'bg-indigo-950 border-indigo-900/50' : 'bg-gray-900 border-gray-800'} border p-4 rounded-2xl ${isUser ? 'rounded-tl-none' : 'rounded-tr-none'} max-w-[85%] md:max-w-xl text-sm leading-relaxed shadow-sm">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showLoading() {
+            const id = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = id;
+            loadingDiv.className = `flex items-start space-x-3 space-x-reverse`;
+            loadingDiv.innerHTML = `
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-gray-900 border border-gray-800 p-4 rounded-2xl rounded-tr-none text-sm text-gray-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce"></span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            `;
+            chatContainer.appendChild(loadingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return id;
+        }
+
+        function removeLoading(id) {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        }
+
+        function escapeHtml(string) {
+            return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
     </script>
 </body>
 </html>
