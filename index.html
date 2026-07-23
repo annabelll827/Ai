@@ -1,212 +1,154 @@
 <!DOCTYPE html>
-<html lang="ckb" dir="rtl">
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ئای ڤیدیۆ - چاتی زیرەکی بێسنوور</title>
+    <title>یاریدەدەری زیرەکی دەستکرد</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: Tahoma, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
             display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        header {
-            background-color: #1f1f1f;
-            padding: 12px 20px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            font-size: 16px;
-            font-weight: bold;
-            color: #4da6ff;
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-        }
-        #api-section {
-            font-size: 13px;
-        }
-        #api-section input {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            background-color: #2d2d2d;
-            color: #fff;
-            width: 200px;
+            height: 100vh;
+            margin: 0;
         }
         #chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+        #chat-box {
             flex: 1;
-            overflow-y: auto;
             padding: 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
         }
         .message {
             max-width: 80%;
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: 12px;
-            line-height: 1.8;
-            word-wrap: break-word;
-            font-size: 15px;
-            white-space: pre-line;
+            line-height: 1.5;
         }
-        .user-message {
-            background-color: #0078d4;
-            color: #fff;
+        .user-msg {
+            background-color: #007bff;
+            color: white;
             align-self: flex-start;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 0;
         }
-        .bot-message {
-            background-color: #252526;
-            color: #e0e0e0;
+        .ai-msg {
+            background-color: #e9ecef;
+            color: #333;
             align-self: flex-end;
-            border-bottom-left-radius: 2px;
-            border: 1px solid #333;
+            border-bottom-left-radius: 0;
         }
-        #input-container {
+        #input-area {
             display: flex;
             padding: 15px;
-            background-color: #1f1f1f;
-            border-top: 1px solid #333;
-            gap: 10px;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
+            border-top: 1px solid #ddd;
+            background: #fafafa;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
         #user-input {
             flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #444;
+            padding: 12px;
+            border: 1px solid #ccc;
             border-radius: 8px;
-            background-color: #2d2d2d;
-            color: #fff;
-            font-size: 15px;
             outline: none;
+            font-size: 16px;
         }
-        #user-input:focus { border-color: #0078d4; }
         #send-btn {
-            padding: 0 25px;
-            background-color: #107c41;
+            background-color: #007bff;
             color: white;
             border: none;
+            padding: 12px 20px;
+            margin-right: 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
+            font-size: 16px;
         }
-        #send-btn:hover { background-color: #0b5a30; }
+        #send-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <span>زیرەکی دەستکردی تایبەت</span>
-        <div id="api-section">
-            <input type="password" id="api-key-input" placeholder="کلیلی API لێرە بنووسە (ئیختیاری)">
-        </div>
-    </header>
-
     <div id="chat-container">
-        <div class="message bot-message">سڵاو! من ئامادەم بۆ جێبەجێکردنی داواکارییەکانت، لەوانە دۆزینەوەی لینکەکان، ڕێنمایی پڕۆژەکان و وەڵامدانەوەی پرسیارەکانت. فەرموو دەست پێبکە!</div>
-    </div>
-
-    <div id="input-container">
-        <input type="text" id="user-input" placeholder="پەیامەکەت لێرە بنووسە (بۆ نموونە: چۆن لینکەکانی m3u8 بدۆزمەوە؟)..." autofocus>
-        <button id="send-btn">ناردن</button>
+        <div id="chat-box">
+            <div class="message ai-msg">سڵاو! من زیرەکی دەستکردم. چۆن دەتوانم یارمەتیت بدەم؟</div>
+        </div>
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="پرسیارەکەت لێرە بنووسە..." onkeypress="handleKeyPress(event)">
+            <button id="send-btn" onclick="sendMessage()">ناردن</button>
+        </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        // لێرەدا دەبێت کۆدی API یەکەی خۆت دابنێیت
+        const API_KEY = 'YOUR_GEMINI_API_KEY'; 
+
+        async function sendMessage() {
             const inputField = document.getElementById('user-input');
-            const sendBtn = document.getElementById('send-btn');
-            const chatContainer = document.getElementById('chat-container');
+            const message = inputField.value.trim();
+            if (!message) return;
 
-            // کارکردنی دوگمەی ناردن بە کلییک کردن
-            sendBtn.addEventListener('click', function() {
-                sendMessage();
-            });
+            addMessage(message, 'user-msg');
+            inputField.value = '';
 
-            // کارکردنی دوگمەی ناردن بە دابگرتنی کلیلی Enter لە سەرتەختە
-            inputField.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
-            });
+            // نیشاندانی دەقی "بیردەکاتەوە..."
+            const typingIndicator = addMessage('بیردەکاتەوە...', 'ai-msg');
 
-            async function sendMessage() {
-                const text = inputField.value.trim();
-                const apiKey = document.getElementById('api-key-input').value.trim();
-                if (!text) return;
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: message }] }]
+                    })
+                });
 
-                appendMessage(text, 'user-message');
-                inputField.value = '';
-
-                // ئەگەر بەکارهێنەر کلیلی APIـی دابین کردبێت
-                if (apiKey) {
-                    try {
-                        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: "gpt-3.5-turbo",
-                                messages: [{ role: "user", content: text }]
-                            })
-                        });
-                        const data = await response.json();
-                        if (data.choices && data.choices.length > 0) {
-                            appendMessage(data.choices[0].message.content, 'bot-message');
-                            return;
-                        }
-                    } catch (error) {
-                        console.error("هەڵە لە پەیوەندی API:", error);
-                    }
-                }
-
-                // سیستمی ناوخۆیی زیرەک
-                setTimeout(() => {
-                    let botReply = getSmartResponse(text);
-                    appendMessage(botReply, 'bot-message');
-                }, 500);
-            }
-
-            function appendMessage(text, className) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${className}`;
-                messageDiv.innerText = text;
-                chatContainer.appendChild(messageDiv);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-
-            function getSmartResponse(query) {
-                let q = query.toLowerCase();
-
-                if (q.includes('m3u8') || q.includes('لینک') || q.includes('ستریمینگ')) {
-                    return `بۆ دۆزینەوەی لینکەکانی m3u8 و بەڕێوەبردنی پڕۆژەکەی ستریمینگ، دەتوانیت ئەم هەنگاوانە جێبەجێ بکەیت:
-
-1. **بەکارهێنانی ئامرازەکانی پشکنین (Network Inspector):** 
-   - لە وێبگەڕەکەی کۆمپیوتەرەکەتدا، کاتێک سەیری ڤیدیۆیەک دەکەیت، دوگمەی F12 یان Inspect بکەرەوە.
-   - بچۆ بەشی **Network** و فلتەری بکە لەسەر **Fetch/XHR** یان بنووسە `m3u8`.
-   - ئەو لینکەی کە فایلی تێدایە کۆپی بکە و لە پڕۆژەکەتدا بەکاری بهێنە.
-
-2. **بەکارهێنانی بەرنامەی دەرەکی:**
-   - ئەگەر لەسەر مۆبایل کار دەکەیت، بەرنامەکانی وەک **Http Catcher** یان **Sniffer** بەکاربهێنە بۆ گرنتیکردنی پاکێجەکانی تۆڕ و دۆزینەوەی ناونیشانی ڕاستەقینەی ڤیدیۆکە.`;
+                const data = await response.json();
+                
+                // سڕینەوەی کاتییەکە و دانانی وەڵامە ڕاستەقینەکە
+                typingIndicator.remove();
+                
+                if (data.candidates && data.candidates.length > 0) {
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    addMessage(aiText, 'ai-msg');
                 } else {
-                    return `سەبارەت به داواکارییەکەت ("${query}"):
-من وەک زیرەکی دەستکردی پڕۆژەکەت ئامادەم بۆ هاوکاریکردنت. دەتوانیت لە سەرەوە کلیلی APIـی خۆت دابنێیت بۆ ئەوەی ڕاستەوخۆ وەڵامی بێسنووری مۆدێلە جیهانییەکانت پێ بداتەوە، یان پرسیارەکانت لە بارەی پڕۆگرامسازی، وێبسایت و لینکەکانەوە ئاراستە بکەیت تا بە وردی بۆت شی بکەمەوە.`;
+                    addMessage("ببورە، هەڵەیەک ڕوویدا لە وەڵامدانەوە.", 'ai-msg');
                 }
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage("کێشەیەک هەیە لە هێڵی ئینتەرنێت یان API.", 'ai-msg');
             }
-        });
-    </script>
+        }
 
+        function addMessage(text, className) {
+            const chatBox = document.getElementById('chat-box');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerText = text;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return msgDiv;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
 </body>
 </html>
